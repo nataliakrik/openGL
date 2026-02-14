@@ -105,7 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glad\include;C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glm-master</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glad\include;C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\natal\OneDrive\pc\Έγγραφα\Graphics\glm-master;C:\Users\natal\source\repos\open_gl_test\open_gl_test\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,17 +131,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\OneDrive\pc\Έγγραφα\Graphics\glad\src\glad.c" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ObjLoader.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\sphereTexture.cpp" />
+    <ClCompile Include="src\tiny_obj_loader.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
+    <None Include="models\planet.mtl" />
+    <None Include="shaders\fragment.glsl" />
+    <None Include="shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="open_gl_test.rc" />
+    <Image Include="models\planet_Quom1200.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment.glsl" />
-    <None Include="vertex.glsl" />
+    <Object Include="models\planet.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </Object>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ObjLoader.h" />
+    <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\sphereTexture.h" />
+    <ClInclude Include="include\tiny_obj_loader.h" />
+    <ClInclude Include="include\vertices.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

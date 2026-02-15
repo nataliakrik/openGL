@@ -2,8 +2,11 @@
 #include "tiny_obj_loader.h"
 #include <iostream>
 
-ObjLoader::ObjLoader(const std::string& path)
+ObjLoader::ObjLoader(const std::string& path, const char* texturePath)
 {
+    // loads planet's texture
+    planetTexture = loadTexture(texturePath);
+
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
@@ -45,6 +48,15 @@ ObjLoader::ObjLoader(const std::string& path)
                 nz = attrib.normals[3 * idx.normal_index + 2];
             }
 
+            float tx = 0.0f, ty = 0.0f;
+            if (idx.texcoord_index >= 0)
+            {
+                tx = attrib.texcoords[2 * idx.texcoord_index + 0];
+                ty = attrib.texcoords[2 * idx.texcoord_index + 1];
+            }
+
+            // each vertex representaion is { vx vy vz nx ny nz tx ty }
+
             vertices.push_back(vx);
             vertices.push_back(vy);
             vertices.push_back(vz);
@@ -52,6 +64,10 @@ ObjLoader::ObjLoader(const std::string& path)
             vertices.push_back(nx);
             vertices.push_back(ny);
             vertices.push_back(nz);
+
+            vertices.push_back(tx);
+            vertices.push_back(ty);
+
 
             indices.push_back(indexOffset);
             indexOffset++;
@@ -79,12 +95,16 @@ ObjLoader::ObjLoader(const std::string& path)
         GL_STATIC_DRAW);
 
     // position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // normal
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    // texcoord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }
@@ -92,6 +112,9 @@ ObjLoader::ObjLoader(const std::string& path)
 void ObjLoader::draw()
 {
     glBindVertexArray(VAO);
+    // activates GL_TEXTURE0 and the bind the planetTexture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, planetTexture);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }

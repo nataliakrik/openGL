@@ -134,7 +134,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ObjLoader.cpp" />
     <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\sphereTexture.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\tiny_obj_loader.cc" />
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +155,7 @@
   <ItemGroup>
     <ClInclude Include="include\ObjLoader.h" />
     <ClInclude Include="include\Shader.h" />
-    <ClInclude Include="include\sphereTexture.h" />
+    <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\tiny_obj_loader.h" />
     <ClInclude Include="include\vertices.h" />
   </ItemGroup>

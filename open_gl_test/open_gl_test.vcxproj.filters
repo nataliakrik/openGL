@@ -30,7 +30,7 @@
     <ClCompile Include="src\tiny_obj_loader.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sphereTexture.cpp">
+    <ClCompile Include="src\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,7 +60,7 @@
     <ClInclude Include="include\vertices.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\sphereTexture.h">
+    <ClInclude Include="include\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

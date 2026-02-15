@@ -3,41 +3,57 @@
 #include <GLFW/glfw3.h>   // Window + input
 
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/glm.hpp> // vec3, vec4 {points , address in space}, mat4 {4x4 matrix} data types
+#include <glm/gtc/matrix_transform.hpp> // transform functions like translate, rotate, scale, perspective, lookAt.
+#include <glm/gtc/type_ptr.hpp> // Μετατρέπει glm::mat4 ή vec σε pointer (float*) για να περάσει στην OpenGL shader.
+#include "vertices.h"
 #include "Shader.h"
 #include "ObjLoader.h"
-#include "sphereTexture.h"
+#include "Texture.h"
 
 
-// Called whenever the window is resized
+// called whenever the window is resized
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
-// Input function (ESC closes the window)
+// input function (ESC closes the window)
 void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE ) == GLFW_PRESS)
+    static bool keyPressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !keyPressed)
+    {
+        isPaused = !isPaused;
+        keyPressed = true;
+    }
+
+    // when the space is released it sets the keyPressed bool to false so it can reset if the button is pressed again
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    {
+        keyPressed = false;
+    }
 }
 
 int main()
 {
-    // window measure
+    // window resolution 1920x1080 (full screen for my pc)
     int width= 1920, height= 1080;
-    // Initialize GLFW
+
+    // initialize GLFW: creates the window and context OpenGL
     glfwInit();
 
-    // Configure GLFW for OpenGL 3.3 Core Profile
+    // configure GLFW for OpenGL 3.3 Core Profile
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-    // Create window
+    // Create window function needs
     /*
         • width : The desired width, in screen coordinates, of the window.
         • height : The desired height, in screen coordinates, of the window.
@@ -57,6 +73,7 @@ int main()
     glfwMakeContextCurrent(window);
 
     // Load GLAD after context is created 
+    // GLAD keeps in track all the openGL functions so the OS can run
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         // glfwGetProcAddress defines the correct function based on which OS we are compilling
@@ -64,7 +81,8 @@ int main()
         return -1;
     }
 
-    // 3D depth effect after loading glad
+    // 3D depth effect after loading glad 
+    // enables z-axis depth effect for the objects
     glEnable(GL_DEPTH_TEST);
 
 
@@ -73,66 +91,6 @@ int main()
     glViewport(0, 0, width, height);
     // tell to GLFW to call this function in every window resize
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-     // cube data
-
-    float vertices[] = { // cube
-        // front face
-        -0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-
-        // back face
-        -0.5f, -0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-
-        // left face
-        -0.5f,  0.5f,  0.5f,
-        -0.5f,  0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f, -0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f,  0.5f,  0.5f,
-
-        // right face
-        0.5f,  0.5f,  0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f,  0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-
-        // top face
-        -0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f,  0.5f,
-        0.5f,  0.5f, -0.5f,
-        -0.5f,  0.5f, -0.5f,
-
-        // bottom face
-        -0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f, -0.5f,
-        0.5f, -0.5f,  0.5f,
-        0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f
-    };
-
-    glm::vec3 cubePositions[] =
-    {
-        glm::vec3(-3.0f,  0.0f,  -5.0f),
-        glm::vec3(0.0f,  3.5f,  -5.0f),
-        glm::vec3(0.0f,  -3.5f,  -5.0f),
-    };
-
 
         
     // initialization of
@@ -154,8 +112,6 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 
-
-
     // Tell OpenGL how to read the data
     /*
     * 0 -> starting location of the first point
@@ -163,109 +119,152 @@ int main()
     * GL_FLOAT -> the numbers are float
     * 3 * sizeof(float) -> each point will start at a location that can be found with this
     */
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); // position (x, y , z)
     glEnableVertexAttribArray(0);
+
+    // texture coords
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); // normal (nx , ny , nz)
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); // texcoord (u , v)
+    glEnableVertexAttribArray(2);
 
     // Unbind (optional but clean)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    /*
-    * τωρα καλοντας
-    * glBindVertexArray(VAO)
-    * η gpu ξερει πως να χειριστει το αντικειμενο
-    */
-
-
     // creating a shader class object
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl" );
 
     
-    // sphere
-    ObjLoader sphere("models/planet.obj");
-    unsigned int planetTexture = loadTexture("models/planet_Quom1200.png");
+    // load sphere object (planet.obj) and planet's texture (planet_Quom1200.png) 
+    ObjLoader sphere("models/planet.obj", "models/planet_Quom1200.png");
+
+    // load cube's texture in cubeTexture variable to use later when renderind cubes
+    unsigned int cubeTexture = loadTexture("models/container.png");
 
 
-
-    // entering render loop
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))              // entering render loop
     {
-        // if esc i pressed window closes
+        // call processInput function to check the keyboard input if "esc" then closes window
         processInput(window);
-        // if the window resizes get width and height
-        glfwGetFramebufferSize(window, &width, &height);
+        float currentTime = glfwGetTime();              // time since the program started
+        float difference = currentTime - lastFrame;     // time difference between currentTime and the time of the last frame
+        lastFrame = currentTime;
 
-        // Rendering clear window+adding color
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        if (!isPaused)                      // if scene is moving advance the running time with the time differences 
+        {
+            runningTime += difference;      // the scene is moving for "runningTime" seconds
+        }
+        float time = runningTime;           // set time to runningTime 
+
+        int numCubes = 6;                   // number of cubes to draw
+        float cubeOrbitRadius = 3.0f;       //  distance from the sphere
+        float cubeOrbitSpeed = 1.0f;        //  orbit speed
+        float planetOrbitRadius = 4.0f;     // radious of the planet's orbit
+
+
+        
+        glfwGetFramebufferSize(window, &width, &height);    // if the window resizes get width and height
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);               // clear frame buffer Rendering window+adding color black
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-
+        //  vector of the planets position
+        glm::vec3 planetPos;
+        planetPos.x = cos(time) * planetOrbitRadius;        // using cos(t) to get number from {0,1} 
+        planetPos.y = 0.0f;                                 // y-axis remains stable at 0
+        planetPos.z = sin(time) * planetOrbitRadius - 6.0f; // using sin(t) to get numbers from {1,0} - 6 to fit in the camera
 
         // apply shader
         shader.use();
-        float timeValue = (float)glfwGetTime();
+        shader.setVec3("lightPos", planetPos);                  // position of the light is the planet's position
+        shader.setVec3("viewPos", glm::vec3(0.0f, 0.0f, 0.0f)); // camera at origin before view transform
 
-        // move camera backwards (so we can see cube)
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+        ////////// Camera /////////////
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            yaw -= cameraSpeed * difference;
 
-        // perspective projection
-        glm::mat4 projection = glm::perspective(
-            glm::radians(45.0f),
-            (float)width / (float)height,
-            0.1f,
-            100.0f
-        );
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            yaw += cameraSpeed * difference;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            pitch += cameraSpeed * difference;
+
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            pitch -= cameraSpeed * difference;
+        
+        if (pitch > 89.0f)
+            pitch = 89.0f;
+        if (pitch < -89.0f)
+            pitch = -89.0f;
+
+        glm::vec3 front;
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+        cameraFront = glm::normalize(front);
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+
+        //glm::mat4 view = glm::mat4(1.0f);                           // view is a matrix on how camera views the window
+        //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -15.0f)); // move camera backwards (so we can see the area that we draw) 
+
+        //Perspective matrix: perspective projection like the camera lens. fov = 45°, aspect = width / height, near = 0.1, far = 100.
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f ); // glm::radians makes 45.0f -> rad
         shader.setMat4("projection", projection);
 
-
         ////////// Sphere /////////////
-        glm::mat4 sphereModel = glm::mat4(1.0f);
 
-        // center
-        sphereModel = glm::translate(sphereModel, glm::vec3(0.0f, 0.0f, -5.0f));
+        glm::mat4 sphereModel = glm::mat4(1.0f);                                    // Model matrix = position, size, rotation of the model "sphere"
+                                                                                    // transformations on the model "sphere Scale -> Rotate -> Translate
+        sphereModel = glm::translate(sphereModel, planetPos );                      // bring to the planetPos with calculated at the start of the render loop
+        sphereModel = glm::scale(sphereModel, glm::vec3(0.5f));                     // scale it down 
+        sphereModel = glm::rotate(sphereModel, time, glm::vec3(0.0f, 1.0f, 0.0f));  // rotate the sphere with the time as input
 
-        // scale it down (OBJ models are often huge)
-        sphereModel = glm::scale(sphereModel, glm::vec3(0.5f));
+        // calculate final position using shaders, sending matrices and uniforms to GPU.
+        shader.setVec4("ourColor", 1.0f, 1.0f, 0.8f, 1.0f); // sets ourColor to  1.0f, 1.0f, 0.8f, 1.0f
+        shader.setMat4("view", view);                       // apply shaders to view
+        shader.setMat4("model", sphereModel);               // apply shaders to sphereModel
+        shader.setBool("isPlanet", true);                   // send true to isPlanet to use the planets fragment color
+        sphere.draw();                                      // draw the planet
 
-        // rotate like earth
-        sphereModel = glm::rotate(sphereModel, timeValue, glm::vec3(0.0f, 1.0f, 0.0f));
-
-        shader.setMat4("model", sphereModel);
-
-        // set sphere color (white/yellow)
-        shader.setVec4("ourColor", 1.0f, 1.0f, 0.8f, 1.0f);
-
-        sphere.draw();
-
-
-
-        // Draw triangle
+        shader.setBool("isPlanet", false);                  // reset isPlanet to draw the cubes with lighting
         shader.setVec4("ourColor", 0.0f, 1.0f, 0.0f, 1.0f);
-        shader.setMat4("view", view);
-        glBindVertexArray(VAO);
 
+       
+        glBindVertexArray(VAO);                     // bind VAO for the cubes
+        glActiveTexture(GL_TEXTURE0);               // activate cube texture
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);
 
-        for (int i = 0; i <3; i++)
+        for (int i = 0; i < numCubes; i++)
         {
+            float angleOffset = i * glm::radians(60.0f);                // each cube is on a different angle 360/6 = 60 radians
+            float orbitAngle = time * cubeOrbitSpeed + angleOffset;     // orbit angle changes with time
+            float angle = time + i;                                     // different angle for each cube using index "i"
+            float selfSpeed = 1.0f + i * 0.3f;                          // rotate cube with different rotation speed for each cube using index "i"
 
-            // 3D effect
+            // vertex offset for final position around the sphere
+            glm::vec3 offset;
+            offset.x = cos(orbitAngle) * cubeOrbitRadius; // calculate x using orbit angle to be in a different x than the other cubes
+            offset.y = 0;
+            offset.z = sin(orbitAngle) * cubeOrbitRadius; // calculate x using orbit angle to be in a different z than the other cubes
+            glm::vec3 cubePos = planetPos + offset;       // cube's position is planet's position + offset
+
+
+            // 4x4 model matrix
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = (float)glfwGetTime() + i;
-            // rotate cube
-            model = glm::rotate(model, angle, glm::vec3(0.5f, 1.0f, 0.0f));
-
+            model = glm::translate(model, cubePos);                             // transform cube to new cube's position
+            model = glm::rotate(model, angle, glm::vec3(0.5f, 1.0f, 0.0f));     // apply rotation cube number "i"
             shader.setMat4("model", model);
+            shader.setInt("ourTexture", 0); 
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 
-        // Swap buffers(back and front when back frame is ready) + poll events
-        glfwSwapBuffers(window);
-        // check if the user pressed esc to close window
-        glfwPollEvents();
+        glfwSwapBuffers(window);    // Swap buffers(back and front when back frame is ready) + poll events
+        glfwPollEvents();           
     }
 
     // Cleanup
@@ -273,7 +272,5 @@ int main()
     glDeleteBuffers(1, &VBO);
     glDeleteProgram(shader.ID);
     glfwTerminate();
-
     return 0;
 }
-

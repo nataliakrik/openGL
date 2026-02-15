@@ -10,12 +10,12 @@ unsigned int loadTexture(const char* path)
     glGenTextures(1, &textureID);
 
     int width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(true);
 
-    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path, &width, &height, &nrChannels, 0); // loads the image to memory returns pixel data to data
 
     if (data)
     {
+        // detect image color format to send to gpu
         GLenum format = GL_RGB;
         if (nrChannels == 1) format = GL_RED;
         if (nrChannels == 3) format = GL_RGB;
@@ -23,19 +23,19 @@ unsigned int loadTexture(const char* path)
 
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-            format, GL_UNSIGNED_BYTE, data);
+        /*parameters 
+        (2D texture| mipmap level| internal format in GPU| image size| border (always 0)| format of input data| each color value is 0–255| actual pixel data)*/
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data); // sends the image data to the GPU
+        glGenerateMipmap(GL_TEXTURE_2D);        //creates smaller versions of the texture ex. when objects move far away
 
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        // texture settings
+        // texture settings  texture coordinates [0,1] 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // smoother image when we magnify or the image gets smaller
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        stbi_image_free(data);
+        stbi_image_free(data); // free memory cause its in the GPU
     }
     else
     {

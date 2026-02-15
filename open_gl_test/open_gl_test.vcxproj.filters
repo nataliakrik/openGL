@@ -38,6 +38,7 @@
     <None Include="shaders\fragment.glsl" />
     <None Include="models\planet.mtl" />
     <None Include="shaders\vertex.glsl" />
+    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="models\planet_Quom1200.png">
@@ -57,10 +58,13 @@
     <ClInclude Include="include\tiny_obj_loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\vertices.h">
+    <ClInclude Include="include\globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

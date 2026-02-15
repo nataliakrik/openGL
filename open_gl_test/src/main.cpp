@@ -1,43 +1,5 @@
-#include <iostream>
-#include <glad/glad.h>    // OpenGL function loader
-#include <GLFW/glfw3.h>   // Window + input
-
-
-#include <glm/glm.hpp> // vec3, vec4 {points , address in space}, mat4 {4x4 matrix} data types
-#include <glm/gtc/matrix_transform.hpp> // transform functions like translate, rotate, scale, perspective, lookAt.
-#include <glm/gtc/type_ptr.hpp> // Μετατρέπει glm::mat4 ή vec σε pointer (float*) για να περάσει στην OpenGL shader.
-#include "vertices.h"
-#include "Shader.h"
-#include "ObjLoader.h"
-#include "Texture.h"
-
-
-// called whenever the window is resized
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
-// input function (ESC closes the window)
-void processInput(GLFWwindow* window)
-{
-    static bool keyPressed = false;
-
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !keyPressed)
-    {
-        isPaused = !isPaused;
-        keyPressed = true;
-    }
-
-    // when the space is released it sets the keyPressed bool to false so it can reset if the button is pressed again
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
-    {
-        keyPressed = false;
-    }
-}
+#pragma once
+#include "globals.h"
 
 int main()
 {
@@ -148,7 +110,7 @@ int main()
     {
         // call processInput function to check the keyboard input if "esc" then closes window
         processInput(window);
-        float currentTime = glfwGetTime();              // time since the program started
+        float currentTime = glfwGetTime();              // time since the program started (float)seconds
         float difference = currentTime - lastFrame;     // time difference between currentTime and the time of the last frame
         lastFrame = currentTime;
 
@@ -172,40 +134,35 @@ int main()
 
         //  vector of the planets position
         glm::vec3 planetPos;
-        planetPos.x = cos(time) * planetOrbitRadius;        // using cos(t) to get number from {0,1} 
+        planetPos.x = cos(time) * planetOrbitRadius;        // using cos(t),sin(t) to create a circle while t changes
         planetPos.y = 0.0f;                                 // y-axis remains stable at 0
-        planetPos.z = sin(time) * planetOrbitRadius - 6.0f; // using sin(t) to get numbers from {1,0} - 6 to fit in the camera
+        planetPos.z = sin(time) * planetOrbitRadius - 4.0f; // adding (- 6) to send it further away from the camera
 
         // apply shader
         shader.use();
         shader.setVec3("lightPos", planetPos);                  // position of the light is the planet's position
-        shader.setVec3("viewPos", glm::vec3(0.0f, 0.0f, 0.0f)); // camera at origin before view transform
+        shader.setVec3("viewPos", glm::vec3(0.0f, 0.0f, 0.0f)); // position of camera at origin before view transform
 
-        ////////// Camera /////////////
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            yaw -= cameraSpeed * difference;
+        ////////// Camera Angles /////////////
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // when pressing W decrease vertical variable
+            vertical -= cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            yaw += cameraSpeed * difference;
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) // when pressing S increase vertical variable
+            vertical += cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            pitch += cameraSpeed * difference;
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) // when pressing A increase horizontal variable
+            horizontal += cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            pitch -= cameraSpeed * difference;
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) // when pressing D decrease horizontal variable
+            horizontal -= cameraSpeed * difference;
         
-        if (pitch > 89.0f)
-            pitch = 89.0f;
-        if (pitch < -89.0f)
-            pitch = -89.0f;
+        glm::vec3 front;                        // transform spherical to cartesian coordinates 
+        front.x = cos(glm::radians(horizontal)) * cos(glm::radians(vertical));
+        front.y = sin(glm::radians(vertical));
+        front.z = sin(glm::radians(horizontal)) * cos(glm::radians(vertical));
 
-        glm::vec3 front;
-        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front.y = sin(glm::radians(pitch));
-        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-        cameraFront = glm::normalize(front);
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        cameraFront = glm::normalize(front);    // normalizing direction vectors.
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);     // creates a matrix for the camera
 
 
         //glm::mat4 view = glm::mat4(1.0f);                           // view is a matrix on how camera views the window
@@ -224,19 +181,18 @@ int main()
         sphereModel = glm::rotate(sphereModel, time, glm::vec3(0.0f, 1.0f, 0.0f));  // rotate the sphere with the time as input
 
         // calculate final position using shaders, sending matrices and uniforms to GPU.
-        shader.setVec4("ourColor", 1.0f, 1.0f, 0.8f, 1.0f); // sets ourColor to  1.0f, 1.0f, 0.8f, 1.0f
+        shader.setVec4("ourColor", 0.0f, 0.0f, 0.0f, 1.0f); // sets ourColor to  0.0f, 0.0f, 0.0f, 1.0f
         shader.setMat4("view", view);                       // apply shaders to view
         shader.setMat4("model", sphereModel);               // apply shaders to sphereModel
         shader.setBool("isPlanet", true);                   // send true to isPlanet to use the planets fragment color
         sphere.draw();                                      // draw the planet
 
         shader.setBool("isPlanet", false);                  // reset isPlanet to draw the cubes with lighting
-        shader.setVec4("ourColor", 0.0f, 1.0f, 0.0f, 1.0f);
 
        
         glBindVertexArray(VAO);                     // bind VAO for the cubes
-        glActiveTexture(GL_TEXTURE0);               // activate cube texture
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        glActiveTexture(GL_TEXTURE0);               // activate texture0 position
+        glBindTexture(GL_TEXTURE_2D, cubeTexture);  // store cubeTexture in the texture0 position
 
         for (int i = 0; i < numCubes; i++)
         {
@@ -273,4 +229,33 @@ int main()
     glDeleteProgram(shader.ID);
     glfwTerminate();
     return 0;
+}
+
+
+
+// called whenever the window is resized
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+// input function (ESC closes the window)
+void processInput(GLFWwindow* window)
+{
+    static bool keyPressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !keyPressed)
+    {
+        isPaused = !isPaused;
+        keyPressed = true;
+    }
+
+    // when the space is released it sets the keyPressed bool to false so it can reset if the button is pressed again
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+    {
+        keyPressed = false;
+    }
 }

@@ -6,18 +6,24 @@ ObjLoader::ObjLoader(const std::string& path, const char* texturePath)
 {
     // loads planet's texture
     planetTexture = loadTexture(texturePath);
-
+    
+    // tiny obj loader loads data in 
+    // attrib.vertices  attrib.normals  attrib.texcoords 
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
 
-
     std::string warn, err;
 
+    // tries to load object
     bool ok = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str());
 
-    if (!warn.empty()) std::cout << "WARN: " << warn << std::endl;
-    if (!err.empty()) std::cout << "ERR: " << err << std::endl;
+    if (!warn.empty()) {
+        std::cout << "WARN: " << warn << std::endl;
+    }
+    if (!err.empty()) {
+        std::cout << "ERR: " << err << std::endl;
+    }
 
     if (!ok)
     {
@@ -76,6 +82,7 @@ ObjLoader::ObjLoader(const std::string& path, const char* texturePath)
 
     indexCount = (int)indices.size();
 
+    // initialize VAO ,VBO ,EBO
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
@@ -94,15 +101,15 @@ ObjLoader::ObjLoader(const std::string& path, const char* texturePath)
         indices.data(),
         GL_STATIC_DRAW);
 
-    // position
+    // position x y z coordinates
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    // normal
+    // normals 
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    // texcoord
+    // texcoord texture coordinates
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 

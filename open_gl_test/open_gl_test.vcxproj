@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="models\planet.mtl" />
+    <None Include="readme.md" />
     <None Include="shaders\fragment.glsl" />
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>
@@ -155,9 +156,10 @@
   <ItemGroup>
     <ClInclude Include="include\ObjLoader.h" />
     <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\tiny_obj_loader.h" />
-    <ClInclude Include="include\vertices.h" />
+    <ClInclude Include="include\globals.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,9 +13,10 @@ This openGL app creates a rotating planet that is in orbit. Around the planet th
 The planet's position is a light source that light up the faces of the cubes that appear closer to the planet.
 
 Interactions with the user:
-	- press "esc" on the keyboard to exit window
-	- press "space" on the keyboard to pause the animation
-	- move the angle of the  camera on the x and y axis using the arrows(up,down , left, right)
+
+  - press "esc" on the keyboard to exit window
+  - press "space" on the keyboard to pause the animation
+  - move the angle of the  camera on the x and y axis using the arrows (up,down , left, right)
 
 
 project structure:

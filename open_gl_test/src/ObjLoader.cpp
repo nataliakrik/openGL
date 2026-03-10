@@ -31,8 +31,7 @@ ObjLoader::ObjLoader(const std::string& path, const char* texturePath)
         return;
     }
 
-    // We will build interleaved vertex data:
-    // position (3 floats) + normal (3 floats)
+    // position (3 floats) + normal (3 floats) + textcoord (2 floats)
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 

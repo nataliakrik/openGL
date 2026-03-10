@@ -95,7 +95,7 @@ This class is responsible for loading, compiling, and linking GLSL shader progra
 
 - The constructor of the class:
 
-	1. Reads both vertex and ragment shaders source code from external files
+	1. Reads both vertex and fragment shaders source code from external files
 	2. Compiles each shader
 	3. Checks for compilation errors and prints error messages
 	4. Links shaders into a single shader program
@@ -123,7 +123,7 @@ About the framebuffer size callback function and the process input function
 
 framebuffer size callback:
 
-	Adjusts the viewport when the window is resized to make sure objects appear correclty with the new width and height.
+	Adjusts the viewport when the window is resized to make sure objects appear correctly with the new width and height.
 
 processInput:
 	

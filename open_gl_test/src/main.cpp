@@ -144,16 +144,16 @@ int main()
         shader.setVec3("viewPos", glm::vec3(0.0f, 0.0f, 0.0f)); // position of camera at origin before view transform
 
         ////////// Camera Angles /////////////
-        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // when pressing W decrease vertical variable
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) // when pressing up arrow decrease vertical variable
             vertical -= cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) // when pressing S increase vertical variable
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) // when pressing down arrow increase vertical variable
             vertical += cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) // when pressing A increase horizontal variable
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) // when pressing left arrow increase horizontal variable
             horizontal += cameraSpeed * difference;
 
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) // when pressing D decrease horizontal variable
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) // when pressing right arrow decrease horizontal variable
             horizontal -= cameraSpeed * difference;
         
         glm::vec3 front;                        // transform spherical to cartesian coordinates 
@@ -164,9 +164,6 @@ int main()
         cameraFront = glm::normalize(front);    // normalizing direction vectors.
         glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);     // creates a matrix for the camera
 
-
-        //glm::mat4 view = glm::mat4(1.0f);                           // view is a matrix on how camera views the window
-        //view = glm::translate(view, glm::vec3(0.0f, 0.0f, -15.0f)); // move camera backwards (so we can see the area that we draw) 
 
         //Perspective matrix: perspective projection like the camera lens. fov = 45°, aspect = width / height, near = 0.1, far = 100.
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f ); // glm::radians makes 45.0f -> rad

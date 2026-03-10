@@ -1,15 +1,22 @@
-Graphics Homework 
-Natalia Krikelli - 1115202000104
+# Graphics Homework openGL
+Natalia Krikelli
 
-About the project
+**Course:**  Graphics I
+
+**Department:** Informatics & Telecommunications
+
+**Semester:** Fall 2025
+
+## About the project
 
 This openGL app creates a rotating planet that is in orbit. Around the planet there are 6 rotating cubes that are in orbit around the planet.  
 The planet's position is a light source that light up the faces of the cubes that appear closer to the planet.
 
 Interactions with the user:
-	- press "esc" on the keyboard to exit window
-	- press "space" on the keyboard to pause the animation
-	- move the angle of the  camera on the x and y axis using the arrows(up,down , left, right)
+
+  - press "esc" on the keyboard to exit window
+  - press "space" on the keyboard to pause the animation
+  - move the angle of the  camera on the x and y axis using the arrows (up,down , left, right)
 
 
 project structure:
@@ -23,8 +30,9 @@ project structure:
 
 ------------------------------------------------------------------------------
 
+## Project Description
 
-About the main
+### About the main
 
 step by step description of the main
 
@@ -62,7 +70,7 @@ step by step description of the main
 
 ------------------------------------------------------------------------------
 
-About the planet
+### About the planet
 
 The planet was build with the help of the "planet.obj" file in the models folder.
 The ObjLoader constructorof the ObjLoader class is responsible for loading the "planet.obj" file for rendering in OpenGL.
@@ -88,7 +96,7 @@ Then the function ObjLoader.draw() draws the planet
 ------------------------------------------------------------------------------
 
 
-About the Shader class
+### About the Shader class
 
 
 This class is responsible for loading, compiling, and linking GLSL shader programs in OpenGL.
@@ -119,7 +127,7 @@ This class is responsible for loading, compiling, and linking GLSL shader progra
 
 ----------------------------------------------------------------------------------
 
-About the framebuffer size callback function and the process input function
+### About the framebuffer size callback function and the process input function
 
 framebuffer size callback:
 
@@ -137,7 +145,7 @@ processInput:
 ----------------------------------------------------------------------------------
 
 
-About the texture function
+### About the texture function
 
 The loadTexture function loads an image file and creates a texture to apply to objects.
 Using the "stb_image.h" library to read the image from disk and extract

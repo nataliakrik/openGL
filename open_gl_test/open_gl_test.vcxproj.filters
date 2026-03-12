@@ -38,7 +38,6 @@
     <None Include="shaders\fragment.glsl" />
     <None Include="models\planet.mtl" />
     <None Include="shaders\vertex.glsl" />
-    <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="models\planet_Quom1200.png">

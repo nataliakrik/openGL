@@ -139,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="models\planet.mtl" />
-    <None Include="readme.md" />
     <None Include="shaders\fragment.glsl" />
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>

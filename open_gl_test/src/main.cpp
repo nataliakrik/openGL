@@ -194,7 +194,7 @@ int main()
         for (int i = 0; i < numCubes; i++)
         {
             float angleOffset = i * glm::radians(60.0f);                // each cube is on a different angle 360/6 = 60 radians
-            float orbitAngle = time * cubeOrbitSpeed + angleOffset;     // orbit angle changes with time
+            float orbitAngle = -time * cubeOrbitSpeed + angleOffset;     // orbit angle changes with time
             float angle = time + i;                                     // different angle for each cube using index "i"
             float selfSpeed = 1.0f + i * 0.3f;                          // rotate cube with different rotation speed for each cube using index "i"
 

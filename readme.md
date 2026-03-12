@@ -28,7 +28,14 @@ project structure:
 	- glad.c source file
 	- this readme.md file
 
-------------------------------------------------------------------------------
+
+
+
+## Project Representation
+![](../graphics.gif)
+
+
+---
 
 ## Project Description
 

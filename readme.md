@@ -33,7 +33,7 @@ project structure:
 
 ## Project Representation
 
-![](../graphics.gif)
+![](graphics.gif)
 
 
 ---

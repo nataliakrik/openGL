@@ -1,5 +1,4 @@
 # Graphics Homework openGL
-Natalia Krikelli
 
 **Course:**  Graphics I
 
